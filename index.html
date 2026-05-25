@@ -349,7 +349,7 @@
 
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('lottery')">抽奖</button>
-            <button class="tab-btn" onclick="switchTab('admin')">中奖记录管理</button>
+            <button class="tab-btn" id="adminTabBtn" onclick="switchTab('admin')" style="display:none;">中奖记录管理</button>
         </div>
 
         <!-- 抽奖区域 -->
@@ -424,6 +424,8 @@
 
         const DRAWS_PER_GROUP = 11;
         const GROUPS_PER_DAY = 3;
+        const ADMIN_PASSWORD = 'Wcx123456wcx';
+        let isAdmin = false;
 
         // 数据管理
         function getToday() {
@@ -701,6 +703,21 @@
             return div.innerHTML;
         }
 
+        // 管理员验证
+        function checkAdmin() {
+            const params = new URLSearchParams(window.location.search);
+            if (params.has('admin')) {
+                const pwd = prompt('请输入管理员密码：');
+                if (pwd === ADMIN_PASSWORD) {
+                    isAdmin = true;
+                    document.getElementById('adminTabBtn').style.display = '';
+                    switchTab('admin');
+                } else if (pwd !== null) {
+                    alert('密码错误！');
+                }
+            }
+        }
+
         // 初始化
         function init() {
             updatePoolDisplay();
@@ -725,6 +742,9 @@
             document.getElementById('username').addEventListener('change', (e) => {
                 sessionStorage.setItem('lottery_username', e.target.value.trim());
             });
+
+            // 检查管理员访问
+            checkAdmin();
         }
 
         init();
